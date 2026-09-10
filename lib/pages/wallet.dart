@@ -75,8 +75,10 @@ getUserWallet() async{
                   SizedBox(width: 20.0,),
                   Column(
                     children: [
-                      Text("Amount Added to Wallet",),
-                      Text("\$" +ds["Amount"],style: TextStyle(color: Color(0xffef2b39), fontSize: 18,fontWeight: FontWeight.bold))
+
+
+                      Text(ds["Type"] == "Refund" ? "Refund Amount" : "Amount Added to Wallet"),
+                      Text("\$" + ds["Amount"],style: TextStyle(color: Color(0xffef2b39), fontSize: 18,fontWeight: FontWeight.bold))
                     ],
                   )
                 ],
@@ -296,6 +298,7 @@ getUserWallet() async{
            "Amount":amount,
            "Date":formattedDate,
            "Timestamp": FieldValue.serverTimestamp(),
+           "Type": "Added",
 
          };
 

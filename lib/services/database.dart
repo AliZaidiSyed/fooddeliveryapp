@@ -122,4 +122,20 @@ class DataBaseMethods {
 
   }
 
+  Future cancelAdminOrder(String orderId) async{
+    return await FirebaseFirestore.instance.
+    collection('Orders').
+    doc(orderId).
+    update({"Status":"Cancelled"});
+  }
+Future  cancelUserOrder(String userId, String orderId) async{
+    return await FirebaseFirestore.instance.
+    collection('users').
+  doc(userId).
+  collection('Orders').
+  doc(orderId).
+    update({"Status":"Cancelled"});
+}
+
+
 }
