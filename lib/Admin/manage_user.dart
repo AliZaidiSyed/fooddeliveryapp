@@ -62,13 +62,8 @@ class _ManageUserState extends State<ManageUser> {
                       Row(
                         children: [
                           ClipRRect(
-                              borderRadius:BorderRadius.circular(60),
-                              child:
-                              Image.asset(
-                                "images/boy.png",
-                                height: 90,
-                                width: 90,
-                                fit: BoxFit.cover,)),
+                      child: Icon(Icons.person,size: 60,color: Colors.grey[600],),
+                  ),
 
                           SizedBox(width: 10.0,),
 

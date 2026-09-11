@@ -387,30 +387,7 @@ class _DetailPageState extends State<DetailPage> {
               ),
             ));
   }
-/*createPaymentIntent(String amount,String currency) async {
-  try {
-    Map<String,dynamic> body={
-      'amount':calculateAmount(amount),
-      'currency': currency,
-      'payment_method_types[]':'card'
 
-    };
-    var response= await http.post(
-      Uri.parse("https://api.stripe.com/v1/payment_intents"),
-      headers:{
-        "Authorization": "Bearer $secretkey",
-        "Content-Type": "application/x-www-form-urlencoded",
-    },
-      body:body,
-
-
-    );
-    return jsonDecode(response.body);
-
-  }catch(err){
-    print("err changing user:${err.toString()}");
-  }
-}} */
 
 }
 

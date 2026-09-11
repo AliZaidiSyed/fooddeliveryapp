@@ -64,10 +64,10 @@ class _ProfileState extends State<Profile> {
                       Container(
                         width: 120,
                           height: 120,
-                        decoration: BoxDecoration(color: Colors.red, ),
+                       // decoration: BoxDecoration(color: Colors.red, ),
                         child: ClipRRect(
                           borderRadius:BorderRadius.circular(120),
-                          child: Image.asset("images/boy.png",fit: BoxFit.cover,),
+                          child:Icon(Icons.person,size:60,color:Colors.grey[600]),
                         ),
                       ),
                       SizedBox(height: 30,),
