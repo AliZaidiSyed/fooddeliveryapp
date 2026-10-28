@@ -21,6 +21,9 @@ A Flutter food ordering app with Firebase authentication, Firestore data storage
 - Stripe
 - Shared Preferences
 
+## Project Screenshots
+<img width="1752" height="4630" alt="top-ten-food-delivery-app-screenshots" src="https://github.com/user-attachments/assets/d9625b81-77e9-4b45-990a-954b011bbf25" />
+
 
 
 
