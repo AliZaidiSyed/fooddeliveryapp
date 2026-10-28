@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fooddeliveryapp/services/constant.dart';
 import 'package:fooddeliveryapp/services/database.dart';
@@ -23,6 +25,8 @@ String description;
 }
 
 class _DetailPageState extends State<DetailPage> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   TextEditingController addresscontroller = TextEditingController();
   Map<String, dynamic>? paymentIntent;
   String?name, id, email, address, wallet;
@@ -34,9 +38,7 @@ class _DetailPageState extends State<DetailPage> {
     id = await SharedpreferenceHelper.getUserId();
     email = await SharedpreferenceHelper.getUserEmail();
     address = await SharedpreferenceHelper.getUserAddress();
-    setState(() {
-
-    });
+        _uiRefreshProvider.refresh();
   }
 
   getUserWallet() async {
@@ -46,9 +48,7 @@ class _DetailPageState extends State<DetailPage> {
     wallet = "${querySnapshot.docs[0]['Wallet']}";
 
     //print(wallet);
-    setState(() {
-
-    });
+        _uiRefreshProvider.refresh();
   }
 
 
@@ -61,7 +61,11 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
 
       body: SafeArea(
         child:SingleChildScrollView(
@@ -116,9 +120,7 @@ class _DetailPageState extends State<DetailPage> {
                         quantity = quantity + 1;
                         totalprice = totalprice + int.parse(widget.price);
 
-                        setState(() {
-
-                        });
+                                                _uiRefreshProvider.refresh();
                       },
 
                       child: Material(
@@ -149,9 +151,7 @@ class _DetailPageState extends State<DetailPage> {
                           quantity = quantity - 1;
                           totalprice = totalprice - int.parse(widget.price);
 
-                          setState(() {
-
-                          });
+                                                    _uiRefreshProvider.refresh();
                         }
                       },
 
@@ -272,6 +272,9 @@ class _DetailPageState extends State<DetailPage> {
 
 
     ),
+    );
+        },
+      ),
     );
   }
 

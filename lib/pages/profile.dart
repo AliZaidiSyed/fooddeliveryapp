@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import 'package:fooddeliveryapp/pages/onboarding.dart';
 import 'package:fooddeliveryapp/services/auth.dart';
 import 'package:fooddeliveryapp/services/database.dart';
@@ -14,15 +16,15 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   String ? name,email;
   String? userId;
 
   getUserSharedpref() async{
     name= await SharedpreferenceHelper.getUserName();
     email=await SharedpreferenceHelper.getUserEmail();
-    setState(() {
-
-    });
+        _uiRefreshProvider.refresh();
   }
   @override
   void initState() {
@@ -36,7 +38,11 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
         body:SafeArea(
         child:SingleChildScrollView(
           child: Container(
@@ -239,5 +245,8 @@ class _ProfileState extends State<Profile> {
     ),
     ),
     ),
+    );
+        },
+      ),
     );
   }}

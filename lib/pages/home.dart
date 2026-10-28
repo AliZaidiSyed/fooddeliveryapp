@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import 'package:fooddeliveryapp/model/burger_model.dart';
 import 'package:fooddeliveryapp/model/category_model.dart';
 import 'package:fooddeliveryapp/model/chinese_model.dart';
@@ -20,6 +22,8 @@ class Home extends StatefulWidget {
 
 }
 class _HomeState extends State<Home> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
 
   String track='0';
   List<CategoryModel> categories=[];
@@ -55,9 +59,8 @@ class _HomeState extends State<Home> {
 
     if(query.isEmpty){
 
-      setState(() {
-        searchresults=[];
-      });
+      searchresults=[];
+      _uiRefreshProvider.refresh();
 
       return;
     }
@@ -117,11 +120,8 @@ class _HomeState extends State<Home> {
 
 
 
-    setState(() {
-
-      searchresults=suggestions;
-
-    });
+    searchresults=suggestions;
+    _uiRefreshProvider.refresh();
 
 
   }
@@ -131,7 +131,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build (BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       body: SafeArea(
         child: Container(
         margin: EdgeInsets.only(left: 10.0,top: 40.0),
@@ -207,9 +211,8 @@ class _HomeState extends State<Home> {
                     ): GestureDetector(
                     onTap: (){
                       searchController.clear();
-                      setState(() {
-                        searchresults=[];
-                      });
+                      searchresults=[];
+                      _uiRefreshProvider.refresh();
 
     },
                       child: Container(
@@ -373,6 +376,9 @@ else...{
       ),
     ),
     );
+        },
+      ),
+    );
   }
 
   Widget foodtile(String name,String image, String price, String description){
@@ -435,9 +441,7 @@ else...{
     return GestureDetector(
       onTap: (){
         track=categoryindex.toString();
-        setState(() {
-
-        });
+                _uiRefreshProvider.refresh();
 
       },
       child: track==categoryindex ?

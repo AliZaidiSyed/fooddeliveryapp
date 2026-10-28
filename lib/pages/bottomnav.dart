@@ -4,6 +4,8 @@
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import 'package:fooddeliveryapp/pages/home.dart';
 import 'package:fooddeliveryapp/pages/order.dart';
 import 'package:fooddeliveryapp/pages/profile.dart';
@@ -17,6 +19,8 @@ State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   late List<Widget> pages;
   late Home HomePage;
  late Order order;
@@ -40,7 +44,11 @@ class _BottomNavState extends State<BottomNav> {
     @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       resizeToAvoidBottomInset: false,
     bottomNavigationBar: CurvedNavigationBar (
       height: 70,
@@ -48,9 +56,8 @@ class _BottomNavState extends State<BottomNav> {
       color: Colors.black,
       animationDuration: Duration(milliseconds: 300),
       onTap: (int index) {
-        setState(() {
-          currentTabIndex=index;
-        });
+        currentTabIndex=index;
+        _uiRefreshProvider.refresh();
 
       },
       items: [
@@ -83,6 +90,9 @@ class _BottomNavState extends State<BottomNav> {
 
       ]),
       body: pages[currentTabIndex],
+    );
+        },
+      ),
     );
 
 

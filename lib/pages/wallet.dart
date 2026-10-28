@@ -2,6 +2,8 @@ import "dart:convert";
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import "package:flutter_stripe/flutter_stripe.dart";
 import "package:fooddeliveryapp/services/constant.dart";
 import "package:fooddeliveryapp/services/database.dart";
@@ -22,32 +24,30 @@ class Wallet extends StatefulWidget {
 }
 
 class _WalletState extends State<Wallet> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   Map<String,dynamic>? paymentIntent;
   TextEditingController amountcontroller= TextEditingController();
-   Stream? walletStream;
+  Stream? walletStream;
 
   String? email,wallet,id;
 
   getthesharedpref() async{
     email=await SharedpreferenceHelper.getUserEmail();
     id=await SharedpreferenceHelper.getUserId();
-    setState(() {
-
-    });
+        _uiRefreshProvider.refresh();
   }
-getUserWallet() async{
+  getUserWallet() async{
     await getthesharedpref();
     walletStream=await DataBaseMethods.getUsersTransactions(id!);
-  QuerySnapshot querySnapshot=await DataBaseMethods().getUserWalletbyemail(email!);
-  wallet="${querySnapshot.docs[0]['Wallet']}";
+    QuerySnapshot querySnapshot=await DataBaseMethods().getUserWalletbyemail(email!);
+    wallet="${querySnapshot.docs[0]['Wallet']}";
 
-  //print(wallet);
-  setState(() {
+    //print(wallet);
+        _uiRefreshProvider.refresh();
+  }
 
-  });
-}
-
-@override
+  @override
   void initState() {
     getUserWallet();
     super.initState();
@@ -95,179 +95,186 @@ getUserWallet() async{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       resizeToAvoidBottomInset: false,
-        body:SafeArea(
+      body:SafeArea(
         child:wallet==null?Center(child:CircularProgressIndicator()):Container(
-            margin: EdgeInsets.only(top:40.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Wallet",style: AppWidget.HeadlineTextField(),),
-                  ],),
-                SizedBox(height: 10,),
-                Expanded(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(color:Color(0xffececf8),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30)),
+          margin: EdgeInsets.only(top:40.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Wallet",style: AppWidget.HeadlineTextField(),),
+                ],),
+              SizedBox(height: 10,),
+              Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(color:Color(0xffececf8),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30)),
 
-                    ),
-                    child:Column(
+                  ),
+                  child:Column(
 
-                          children: [
-                            SizedBox(height: 20,),
+                    children: [
+                      SizedBox(height: 20,),
 
 
-                          Container(
-                            margin: EdgeInsets.only(left:20.0,right: 20.0,top: 20.0),
-                         child:   Material(
-                              elevation: 3.0,
-                           borderRadius:BorderRadius.circular(10),
-                              child: Container(
-                                padding: EdgeInsets.all(20),
-                                margin: EdgeInsets.only(left:20.0,top:20,right: 18),
-                                width:MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(10)),
-                                child:Row(
-                                  children: [
-                                    Image.asset("images/wallet.png",
-                                      height:100,
-                                      width:100,
-                                      fit: BoxFit.cover,),
-                                    SizedBox(width: 60.0,),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("Your Wa!llet",style:AppWidget.boldTextFieldStyle()),
-                                        Text("\$"+wallet!, style: AppWidget.boldTextFieldStyle(),)
-                                        
-                                      ],
-                                    )
-                                  ],
-                                )
-                              ),
-                            ),
-
-                          ),
-                            SizedBox(height: 20.0,),
-                            Padding(
-                              padding: EdgeInsets.only(left: 20.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Container(
+                        margin: EdgeInsets.only(left:20.0,right: 20.0,top: 20.0),
+                        child:   Material(
+                          elevation: 3.0,
+                          borderRadius:BorderRadius.circular(10),
+                          child: Container(
+                              padding: EdgeInsets.all(20),
+                              margin: EdgeInsets.only(left:20.0,top:20,right: 18),
+                              width:MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(color: Colors.white,borderRadius: BorderRadius.circular(10)),
+                              child:Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap:(){
-                                      makePayment("100");
-                                      
-                            },
-                                    child: Container(
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(color: Colors.black45,width: 2.0,),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Center(child: Text("\$100", style: AppWidget.priceTextFieldStyle(),)),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      makePayment("50");
-                                    },
-                                    child: Container(
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(color: Colors.black45,width: 2.0,),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Center(child: Text("\$50", style: AppWidget.priceTextFieldStyle(),)),
-                                    ),
-                                  ),
+                                  Image.asset("images/wallet.png",
+                                    height:100,
+                                    width:100,
+                                    fit: BoxFit.cover,),
+                                  SizedBox(width: 60.0,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Your Wa!llet",style:AppWidget.boldTextFieldStyle()),
+                                      Text("\$"+wallet!, style: AppWidget.boldTextFieldStyle(),)
 
-                                  GestureDetector(
-                                    onTap: (){
-                                      makePayment('200');
-                                    },
-                                    child: Container(
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(color: Colors.black45,width: 2.0,),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Center(child: Text("\$200", style: AppWidget.priceTextFieldStyle(),)),
-                                    ),
+                                    ],
                                   )
-
                                 ],
-                              ),
-                            ),
-                            SizedBox(height: 30.0,),
+                              )
+                          ),
+                        ),
+
+                      ),
+                      SizedBox(height: 20.0,),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             GestureDetector(
-                              onTap: (){
-                                openBox();
+                              onTap:(){
+                                makePayment("100");
+
                               },
                               child: Container(
-                                height: 50,
-                                margin: EdgeInsets.only(left: 20.0,right: 20.0),
-                                width: MediaQuery.of(context).size.width,
+                                width: 100,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffef2b39),
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black45,width: 2.0,),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    "Add Money",
-                                    style: AppWidget.BoldWhiteTextFieldStyle(),),
-                                ),
+                                child: Center(child: Text("\$100", style: AppWidget.priceTextFieldStyle(),)),
                               ),
                             ),
-                            SizedBox(height: 20,),
-                            Expanded(
+                            GestureDetector(
+                              onTap: () {
+                                makePayment("50");
+                              },
                               child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        topRight: Radius.circular(30)
-
-                                    )),
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: 20,),
-                                    Text("Your Transactions", style:AppWidget.boldTextFieldStyle() ,),
-                                    SizedBox(height: 20.0,),
-                                    Expanded(
-
-                                      //height: MediaQuery.of(context).size.height/2.5,
-                                      child: allTransaction(),
-                                    )
-
-
-                                  ],
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black45,width: 2.0,),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
+                                child: Center(child: Text("\$50", style: AppWidget.priceTextFieldStyle(),)),
+                              ),
+                            ),
+
+                            GestureDetector(
+                              onTap: (){
+                                makePayment('200');
+                              },
+                              child: Container(
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black45,width: 2.0,),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(child: Text("\$200", style: AppWidget.priceTextFieldStyle(),)),
                               ),
                             )
 
-                        ],
-                    ),
-                    ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 30.0,),
+                      GestureDetector(
+                        onTap: (){
+                          openBox();
+                        },
+                        child: Container(
+                          height: 50,
+                          margin: EdgeInsets.only(left: 20.0,right: 20.0),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Color(0xffef2b39),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Add Money",
+                              style: AppWidget.BoldWhiteTextFieldStyle(),),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20,),
+                      Expanded(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30)
 
+                              )),
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20,),
+                              Text("Your Transactions", style:AppWidget.boldTextFieldStyle() ,),
+                              SizedBox(height: 20.0,),
+                              Expanded(
+
+                                //height: MediaQuery.of(context).size.height/2.5,
+                                child: allTransaction(),
+                              )
+
+
+                            ],
+                          ),
+                        ),
+                      )
+
+                    ],
                   ),
+                ),
 
-        ],
-    ),
+              ),
+
+            ],
+          ),
 
         ),
-        ),
+      ),
 
 
+    );
+        },
+      ),
     );
   }
   Future <void> makePayment(String amount) async {
@@ -289,20 +296,20 @@ getUserWallet() async{
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
         int updatedWallet=int.parse(wallet!) + int.parse(amount);
-       await DataBaseMethods().updateUserWallet(updatedWallet.toString(), id!);
-       await getUserWallet();
-       setState(() {});
-         DateTime now=DateTime.now();
-         String formattedDate=DateFormat("dd-MMM-yyyy").format(now);
-         Map<String,dynamic> userTransactionMap={
-           "Amount":amount,
-           "Date":formattedDate,
-           "Timestamp": FieldValue.serverTimestamp(),
-           "Type": "Added",
+        await DataBaseMethods().updateUserWallet(updatedWallet.toString(), id!);
+        await getUserWallet();
+                _uiRefreshProvider.refresh();
+        DateTime now=DateTime.now();
+        String formattedDate=DateFormat("dd-MMM-yyyy").format(now);
+        Map<String,dynamic> userTransactionMap={
+          "Amount":amount,
+          "Date":formattedDate,
+          "Timestamp": FieldValue.serverTimestamp(),
+          "Type": "Added",
 
-         };
+        };
 
-       await DataBaseMethods.addUserTransaction(userTransactionMap, id!);
+        await DataBaseMethods.addUserTransaction(userTransactionMap, id!);
 
         showDialog(
           context: context,
@@ -456,11 +463,11 @@ getUserWallet() async{
 
 
 
-               await   makePayment(amountcontroller.text);
+                    await   makePayment(amountcontroller.text);
                     amountcontroller.clear();
-                  if(mounted) {
-                    Navigator.pop(context);
-                  }
+                    if(mounted) {
+                      Navigator.pop(context);
+                    }
                   },
                   child: Center(
                     child: Container(
@@ -491,8 +498,3 @@ getUserWallet() async{
 
 
 }
-
-
-
-
-

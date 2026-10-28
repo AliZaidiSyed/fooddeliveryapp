@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import 'package:fooddeliveryapp/Admin/admin_login.dart';
 import 'package:fooddeliveryapp/pages/bottomnav.dart';
 import 'package:fooddeliveryapp/pages/forget_password.dart';
@@ -17,6 +19,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   String email="", password="";
   TextEditingController emailController= new TextEditingController();
   TextEditingController passwordController= new TextEditingController();
@@ -35,7 +39,7 @@ class _LoginState extends State<Login> {
 
   userLogin() async{
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email!, password: password!,);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text.trim(), password: password,);
 
       var user = await FirebaseFirestore.instance
           .collection("users")
@@ -134,7 +138,11 @@ class _LoginState extends State<Login> {
     
 
 
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       body:SafeArea(
         child: SingleChildScrollView(
         child: Container(
@@ -235,10 +243,9 @@ class _LoginState extends State<Login> {
                                 prefixIcon: Icon(Icons.password_outlined),
                                 suffixIcon: GestureDetector(
                                   onTap: () {
-                                    setState(() {
-                                      _obsecureText=
+                                    _obsecureText=
                                       !_obsecureText;
-                                    });
+                                    _uiRefreshProvider.refresh();
                                   },
 
                                   child:
@@ -272,11 +279,9 @@ class _LoginState extends State<Login> {
                           onTap: (){
 
                               if(  emailController.text!="" && passwordController.text!=""){
-                                setState(() {
-
-                                  email=emailController.text;
+                                email=emailController.text;
                                   password=passwordController.text;
-                                });
+                                _uiRefreshProvider.refresh();
                                 userLogin();
                               }
                           },
@@ -329,6 +334,9 @@ class _LoginState extends State<Login> {
         ),
       ),
     ),
+    );
+        },
+      ),
     );
 
 

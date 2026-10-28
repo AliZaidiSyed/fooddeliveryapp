@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import 'package:fooddeliveryapp/services/database.dart';
 import 'package:fooddeliveryapp/services/widget_support.dart';
 
@@ -12,15 +14,15 @@ class Allorder extends StatefulWidget {
 }
 
 class _AllorderState extends State<Allorder> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
 
   Stream? ordersStream;
 
 
   getontheload() async{
     ordersStream=await DataBaseMethods().getAdminOrders();
-    setState(() {
-
-    });
+        _uiRefreshProvider.refresh();
   }
   @override
   void initState() {
@@ -169,7 +171,11 @@ class _AllorderState extends State<Allorder> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       body: SafeArea(
 
           child:Container(
@@ -231,6 +237,9 @@ class _AllorderState extends State<Allorder> {
         ),
       ),
 
+      ),
+    );
+        },
       ),
     );
   }

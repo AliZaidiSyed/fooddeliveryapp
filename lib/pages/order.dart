@@ -1,5 +1,7 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import "package:fooddeliveryapp/services/database.dart";
 import "package:fooddeliveryapp/services/shared_pref.dart";
 import "package:fooddeliveryapp/services/widget_support.dart";
@@ -13,6 +15,8 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   String? id;
   Stream<QuerySnapshot>? ordersStream;
   bool isCancel=false;
@@ -26,9 +30,7 @@ class _OrderState extends State<Order> {
   getontheload() async{
     await getthesharedpref();
     ordersStream=await DataBaseMethods.getUserOrders(id!);
-    setState(() {
-
-    });
+        _uiRefreshProvider.refresh();
 
   }
 
@@ -64,9 +66,8 @@ class _OrderState extends State<Order> {
     ),
     );
     if(confirm!=true) return;
-    setState(() {
-      isCancel=true;
-    });
+    isCancel=true;
+    _uiRefreshProvider.refresh();
 
     try {
       String userId = ds["Id"];
@@ -117,9 +118,8 @@ class _OrderState extends State<Order> {
       );
     } finally {
       if (mounted) {
-        setState(() {
-          isCancel = false;
-        });
+        isCancel = false;
+        _uiRefreshProvider.refresh();
       }}}
   Widget allOrders() {
     return StreamBuilder(
@@ -236,7 +236,11 @@ class _OrderState extends State<Order> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       body:SafeArea(
         child:Container(
         margin: EdgeInsets.only(top:40.0),
@@ -281,6 +285,9 @@ class _OrderState extends State<Order> {
 
     ),
 
+    );
+        },
+      ),
     );
   }
 }

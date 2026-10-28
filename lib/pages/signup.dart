@@ -1,5 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import 'package:provider/provider.dart';
+import 'package:fooddeliveryapp/providers/ui_refresh_provider.dart';
 import "package:fooddeliveryapp/pages/bottomnav.dart";
 import "package:fooddeliveryapp/pages/login.dart";
 import "package:fooddeliveryapp/services/database.dart";
@@ -17,6 +19,8 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  final UiRefreshProvider _uiRefreshProvider = UiRefreshProvider();
+
   String email="", password="",name="";
   TextEditingController nameController= new TextEditingController();
   TextEditingController emailController= new TextEditingController();
@@ -41,7 +45,7 @@ class _SignupState extends State<Signup> {
   emailController.text!="") {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.
-      createUserWithEmailAndPassword(email: email, password: password);
+      createUserWithEmailAndPassword(email: emailController.text.trim(), password: password);
       String Id = randomAlphaNumeric(10);
 
       Map<String, dynamic> userInfoMap = {
@@ -127,7 +131,11 @@ class _SignupState extends State<Signup> {
 }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<UiRefreshProvider>.value(
+      value: _uiRefreshProvider,
+      child: Consumer<UiRefreshProvider>(
+        builder: (context, refreshProvider, child) {
+          return Scaffold(
       body: SafeArea(
         child:SingleChildScrollView(
         child: Container(
@@ -239,9 +247,8 @@ class _SignupState extends State<Signup> {
                               prefixIcon: Icon(Icons.password_outlined),
                               suffixIcon: GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    _obsecureText=!_obsecureText;
-                                  });
+                                  _obsecureText=!_obsecureText;
+                                  _uiRefreshProvider.refresh();
                                 },
 
                                   child:
@@ -258,11 +265,10 @@ class _SignupState extends State<Signup> {
                         GestureDetector(
                           onTap: (){
                             if(nameController.text!="" && emailController.text!="" && passwordController.text!=""){
-                              setState(() {
-                                name=nameController.text;
+                              name=nameController.text;
                                 email=emailController.text;
                                 password=passwordController.text;
-                              });
+                              _uiRefreshProvider.refresh();
                               registration();
                             }
                           },
@@ -314,6 +320,9 @@ class _SignupState extends State<Signup> {
         ),
       ),
     ),
+    );
+        },
+      ),
     );
   }
 }
