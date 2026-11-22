@@ -1,7 +1,7 @@
 
 <div align="center">
 
-<img width="1000" height="2340" alt="01_Welcome" src="https://github.com/user-attachments/assets/778e0d6c-f25a-43ed-b17a-166d2025e7f7" />
+<img width="200" height="430" alt="01_Welcome" src="https://github.com/user-attachments/assets/778e0d6c-f25a-43ed-b17a-166d2025e7f7" />
 
 
 # Food Delivery App
