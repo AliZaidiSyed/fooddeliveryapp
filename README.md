@@ -11,8 +11,10 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.x-blue?logo=dart)
 ![State Management](https://img.shields.io/badge/State_Management-Provider-purple)
-![Firebase](https://img.shields.io/badge/Firebase-Authentication-orange?logo=firebase)
-![Supabase](https://img.shields.io/badge/Storage-Supabase-green?logo=supabase)
+
+![Firebase](https://img.shields.io/badge/Firebase-orange?logo=firebase)
+![Supabase](https://img.shields.io/badge/Supabase-green?logo=supabase)
+
 ![Stripe](https://img.shields.io/badge/Payments-Stripe-blue?logo=stripe)
 
 </div>
