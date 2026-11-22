@@ -1,7 +1,8 @@
 
 <div align="center">
 
-<img src="screenshots/Hot_Flavour_Collage.png" width="650" alt="Hot Flavour App Screenshots">
+<img width="1080" height="2340" alt="01_Welcome" src="https://github.com/user-attachments/assets/778e0d6c-f25a-43ed-b17a-166d2025e7f7" />
+
 
 # Food Delivery App
 
@@ -21,6 +22,8 @@
 ## 📱 Screenshots
 
 The screenshots showcase the main features and user interface of Hot Flavour.
+<img width="800" height="2226" alt="Hot_Flavour_Screenshots_With_Profile_Preview" src="https://github.com/user-attachments/assets/c9d16e24-3b1e-4e4e-b930-e999bcfabd2a" />
+
 
 <div align="center">
 
