@@ -11,6 +11,7 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.x-blue?logo=dart)
 ![State Management](https://img.shields.io/badge/State_Management-Provider-purple)
+![SharedPreferences](https://img.shields.io/badge/SharedPreferences-Local_Storage-607D8B)
 
 ![Firebase](https://img.shields.io/badge/Firebase-orange?logo=firebase)
 ![Supabase](https://img.shields.io/badge/Supabase-green?logo=supabase)
