@@ -12,10 +12,8 @@
 ![Dart](https://img.shields.io/badge/Dart-3.x-blue?logo=dart)
 ![State Management](https://img.shields.io/badge/State_Management-Provider-purple)
 ![SharedPreferences](https://img.shields.io/badge/SharedPreferences-Local_Storage-607D8B)
-
 ![Firebase](https://img.shields.io/badge/Firebase-orange?logo=firebase)
 ![Supabase](https://img.shields.io/badge/Supabase-green?logo=supabase)
-
 ![Stripe](https://img.shields.io/badge/Payments-Stripe-blue?logo=stripe)
 
 </div>
@@ -205,61 +203,15 @@ Provider separates state-related logic from UI widgets and updates screens using
 
 ---
 
-## 🔥 Firebase Integration
 
-Firebase is used for authentication and cloud database operations.
 
-### Firebase Authentication
 
-- User registration.
-- User login.
-- Password recovery.
-- Authentication session management.
 
-### Cloud Firestore
 
-- User information.
-- Food order records.
-- Wallet balance.
-- Transaction history.
-- Order status updates.
-- Profile image URLs.
 
----
 
-## 🖼️ Supabase Storage
 
-Supabase Storage is used for storing user profile pictures.
 
-### Image Upload Flow
-
-1. User selects an image from the gallery.
-2. Image is uploaded to Supabase Storage.
-3. Supabase generates a Public URL.
-4. The Public URL is saved in Cloud Firestore.
-5. Profile and Admin screens display the uploaded image.
-
-**Storage Bucket:** `profile-images`
-
-If a user has not uploaded an image, a default person icon is displayed.
-
----
-
-## 💰 Payment Integration
-
-Stripe is integrated into the wallet feature.
-
-The payment flow includes:
-
-1. User selects an amount.
-2. Stripe Payment Sheet opens.
-3. User completes the payment.
-4. Wallet balance is updated.
-5. Transaction details are stored in Cloud Firestore.
-
-The wallet also supports refunds when eligible orders are cancelled.
-
----
 
 ## 📦 Dependencies
 
